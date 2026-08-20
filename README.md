@@ -19,3 +19,4 @@ for port in ports_to_scan:
     client.close()
 
 print("--- تم الانتهاء من الفحص بنجاح ---")
+
