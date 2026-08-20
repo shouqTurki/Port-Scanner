@@ -4,7 +4,7 @@ import socket
 target_host = "scanme.nmap.org"
 ports_to_scan = [22, 80, 443]
 
-print(f"--- بدء فحص الهدف: {target_host} ---")
+print(f"Scanning target: {target_host}")
 
 for port in ports_to_scan:
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -12,11 +12,10 @@ for port in ports_to_scan:
     result = client.connect_ex((target_host, port))
     
     if result == 0:
-        print(f"[+] المنفذ {port}: مفتوح (OPEN)")
+        print(f"[+] Port {port}: OPEN")
     else:
-        print(f"[-] المنفذ {port}: مغلق (CLOSED)")
+        print(f"[-] Port {port}: CLOSED")
         
     client.close()
 
-print("--- تم الانتهاء من الفحص بنجاح ---")
-
+print("Scan completed successfully")
