@@ -1,32 +1,51 @@
 # basic_scanner.py
 import socket
+import random
+import time
 
-# 1. تحديد الهدف (يمكنك كتابة اسم موقع أو IP داخلي)
-target_host = "scanme.nmap.org"  # هذا موقع رسمي ومجاني مخصص ومسموح لفحص الثغرات تجريبياً
+def basic_scan(target_host, ports):
+    print(f"\n--- Starting Standard Scan on: {target_host} ---")
+    for port in ports:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(1.0)
+        result = client.connect_ex((target_host, port))
+        if result == 0:
+            print(f"[+] Port {port}: OPEN")
+        else:
+            print(f"[-] Port {port}: CLOSED")
+        client.close()
+    print("--- Standard Scan Completed ---")
 
-# 2. تحديد قائمة المنافذ التي نرغب في فحصها (أشهر منافذ الويب والخدمات)
-ports_to_scan = [21, 22, 80, 443]
+def stealth_scan(target_host, ports):
+    print(f"\n--- Starting Stealth Scan on: {target_host} ---")
+    print("Shuffling ports and adding randomized delays for evasion...")
+    random.shuffle(ports)
+    for port in ports:
+        delay = random.uniform(1.5, 3.5)
+        time.sleep(delay)
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(1.5)
+        result = client.connect_ex((target_host, port))
+        if result == 0:
+            print(f"[+] Discovered Open Port: {port}")
+        client.close()
+    print("--- Stealth Scan Completed ---")
 
-print(f"--- بدء فحص الهدف: {target_host} ---")
-
-# 3. حلقة تكرارية للمرور على كل منفذ وفحصه
-for port in ports_to_scan:
-    # إنشاء اتصال شبكة باستخدام بروتوكول TCP
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# --- Main Program Execution ---
+if __name__ == "__main__":
+    target = "scanme.nmap.org"
+    common_ports = [22, 80, 443]
     
-    # تحديد مهلة زمنية ثانية واحدة للرد لحماية الأداة من التعليق
-    client.settimeout(1.0)
+    print("====================================")
+    print("    WELCOME TO PYTHON PORT SCANNER  ")
+    print("====================================")
+    print("1. Standard Scan (Fast)")
+    print("2. Stealth Scan (Anti-Detection)")
     
-    # محاولة الاتصال بالمنفذ
-    result = client.connect_ex((target_host, port))
+    # محاكاة اختيار المستخدم للوضع الافتراضي
+    choice = "1" 
     
-    # إذا كانت النتيجة (0) فالمنفذ مفتوح، وإلا فهو مغلق
-    if result == 0:
-        print(f"[+] المنفذ {port}: مفتوح (OPEN)")
-    else:
-        print(f"[-] المنفذ {port}: مغلق (CLOSED)")
-        
-    # إغلاق الاتصال بعد الفحص
-    client.close()
-
-print("--- تم الانتهاء من الفحص بنجاح ---")
+    if choice == "1":
+        basic_scan(target, common_ports)
+    elif choice == "2":
+        stealth_scan(target, common_ports)
